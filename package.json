@@ -1,0 +1,21 @@
+{
+  "name": "ai-sdk",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@ai-sdk/google": "^2.0.14",
+    "@ai-sdk/react": "^2.0.45",
+    "ai": "^5.0.45",
+    "dotenv": "^17.2.2",
+    "zod": "^4.1.9"
+  }
+}
