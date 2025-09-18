@@ -2,6 +2,7 @@ import "dotenv/config";
 import { generateText, tool } from "ai";
 import { google } from "@ai-sdk/google";
 import z from "zod";
+import { stepCountIs } from "ai";
 
 /*
 tools are objects that can be called by the model to perform
@@ -24,8 +25,9 @@ a specific task. AI SDK Core tools contain three elements:
 
 const result = await generateText({
     model: google("gemini-2.0-flash", { apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY }),
-    prompt: "What is the weather in Bengaluru?",
+    prompt: "What is the Prime Minister of INDIA ?",
 
+    stopWhen: stepCountIs(1),
     tools: {
         weather: tool({
             description: "Get the weather in a location",
@@ -37,6 +39,23 @@ const result = await generateText({
                 temperature: 72 + Math.floor(Math.random() * 21) - 10,
             }),
         }),
+        answer: tool({
+            description: "Use this for general questions not related to tools",
+            inputSchema: z.object({
+                query: z.string().describe("The question to answer directly"),
+            }),
+            execute: async ({ query }) => {
+                const subResult = await generateText({
+                    model: google("gemini-2.0-flash", {
+                        apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY,
+                    }),
+                    prompt: query,
+                    // 🔑 no tools here → freeform LLM response
+                });
+
+                return { response: subResult.text };
+            },
+        })
     },
 })
 
